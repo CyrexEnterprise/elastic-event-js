@@ -1,0 +1,16 @@
+{
+  "name": "elastic-event-js",
+  "version": "0.0.1",
+  "description": "Event logging using ElasticSearch",
+  "homepage": "www.cloudoki.com",
+  "author": "Edgar Ribeiro",
+  "email": "edgar@cloudoki.com",
+  "devDependencies": {
+    "eslint": "^1.10.3",
+    "eslint-config-airbnb": "^3.1.0"
+  },
+  "scripts": {
+    "lint": "eslint ./",
+    "examples": "http-server ./"
+  }
+}

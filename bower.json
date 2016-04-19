@@ -1,0 +1,23 @@
+{
+  "name": "elastic-event-js",
+  "description": "Event logging using ElasticSearch",
+  "main": "elastic-event.js",
+  "authors": [
+    "Edgar Ribeiro"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/Cloudoki/elastic-event",
+  "moduleType": [
+    "amd",
+    "globals",
+    "node"
+  ],
+  "main": "elastic-event.js",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
