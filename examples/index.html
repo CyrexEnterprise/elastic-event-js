@@ -1,0 +1,94 @@
+<html>
+<body>
+  <script src="../elastic-event.js"></script>
+  <script src="../node_modules/bodybuilder/browser/bodybuilder.min.js"></script>
+  host: <input id="host" type="text"><br>
+  index: <input id="index" type="text"><br>
+  <button onclick="config()">Config</button><br><br>
+  user: <input id="user" type="text">&nbsp
+  <button onclick="identify()">Identify yourself</button><br><br>
+  <button onclick="track()">track this click!</button><br><br>
+  <button onclick="send()">Send queued events</button><br>
+  <button onclick="fetch()">Fetch all clicks</button>&nbsp<span id="fetchClicks"></span><br><br>
+  user: <input id="userFetch" type="text">&nbsp
+  <button onclick="search()">Fetch user clicks</button>&nbsp<span id="searchClicks"></span>
+  <script>
+    host = document.getElementById('host');
+    index = document.getElementById('index');
+    user = document.getElementById('user');
+    fetchClicks = document.getElementById('fetchClicks');
+    searchClicks = document.getElementById('searchClicks');
+    userFetch = document.getElementById('userFetch');
+
+    // extend base event
+    var base = elasticevent.baseEvent;
+    elasticevent.baseEvent = function () {
+      var baseEvent = base.apply(this, arguments);
+      baseEvent['@timestamp'] = new Date().toISOString();
+      return baseEvent;
+    };
+
+    elasticevent.identify({
+      sessionId: new Date().getTime()
+    });
+
+    function config () {
+      elasticevent.config({
+        host: host.value,
+        index: index.value
+      });
+    }
+
+    function identify () {
+      elasticevent.identify({
+        user: user.value
+      });
+      console.log('identity', elasticevent.traits);
+    }
+
+    function track () {
+      elasticevent.track('click');
+    }
+
+    function send () {
+      console.log('sending events');
+      elasticevent.send(null, function(err, resp) {
+        if (err) {
+          return console.error(err);
+        }
+
+        console.log('sent', resp);
+      });
+    }
+
+    function fetch() {
+      elasticevent.search(null,
+        { type: 'click' },
+        function(err, resp) {
+          if (err) {
+            return console.error(err);
+          }
+          fetchClicks.textContent = resp.hits.total;
+          console.log('fetch', resp);
+        });
+    }
+
+    function queryUserClicks(user) {
+      return new Bodybuilder().filter('term', 'user', user).build('v2');
+    };
+
+    function search() {
+      elasticevent.search(queryUserClicks(userFetch.value),
+        { type: 'click' },
+        function(err, resp) {
+          if (err) {
+            return console.error(err);
+          }
+          searchClicks.textContent = resp.hits.total;
+          console.log('search', resp);
+        });
+    }
+
+  </script>
+</body>
+</html>

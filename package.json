@@ -1,16 +1,25 @@
 {
   "name": "elastic-event-js",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Event logging using ElasticSearch",
   "homepage": "www.cloudoki.com",
   "author": "Edgar Ribeiro",
   "email": "edgar@cloudoki.com",
   "devDependencies": {
+    "bodybuilder": "^1.5.0",
     "eslint": "^1.10.3",
-    "eslint-config-airbnb": "^3.1.0"
+    "eslint-config-airbnb": "^3.1.0",
+    "http-server": "^0.9.0",
+    "webpack": "^1.13.0"
   },
   "scripts": {
-    "lint": "eslint ./",
-    "examples": "http-server ./"
-  }
+    "lint": "eslint elastic-event.js",
+    "build": "npm run lint && webpack",
+    "example": "http-server ./"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/Cloudoki/elastic-event-js"
+  },
+  "license": "MIT"
 }

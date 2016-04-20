@@ -17,7 +17,7 @@
     this.max = 256;
     this.interval = 10000;
     this.host = 'localhost:9200';
-    this.url = this.host;
+    this.traits = {};
   }
 
   ElasticEvent.prototype.setupIntervalSend = function (options) {
@@ -28,7 +28,7 @@
     this.interval = options.interval || this.interval;
 
     this.intervalSend = setInterval(
-      this.send.bind(this, false),
+      this.send.bind(this, null, null),
       this.interval
     );
   };
@@ -39,7 +39,10 @@
     }
 
     // make sure it sends queued events on exit
-    this.beforeunload = this.send.bind(this, true);
+    this.beforeunload = this.send.bind(this, {
+      sync: true
+    }, null);
+
     window.addEventListener('beforeunload', this.beforeunload);
   };
 
@@ -48,8 +51,7 @@
     this.setupBeforeUnload();
   };
 
-  ElasticEvent.prototype.close = function () {
-    self.send();
+  ElasticEvent.prototype.close = function (callback) {
     if (this.intervalSend) {
       clearInterval(this.intervalSend);
       this.intervalSend = null;
@@ -58,6 +60,7 @@
       window.removeEventListener('beforeunload', this.beforeunload);
       this.beforeunload = null;
     }
+    self.send(null, callback);
   };
 
   ElasticEvent.prototype.init = function (options) {
@@ -70,18 +73,9 @@
     this.host = options.host || this.host;
     this.index = options.index || this.index;
     this.type = options.type || this.type;
-
-    this.url = this.host;
-
-    if (this.index) {
-      this.url += '/' + this.index;
-    }
-    if (this.type) {
-      this.url += '/' + this.type;
-    }
   };
 
-  function request(url, data, async, callback) {
+  ElasticEvent.prototype.xhr = function (url, content, sync, callback) {
     var xhr = new XMLHttpRequest();
 
     if (typeof callback === 'function') {
@@ -95,69 +89,88 @@
       };
     }
 
-    xhr.open('POST', url, async);
+    xhr.open('POST', url, !sync);
 
-    if (data) {
+    if (content) {
+      // no preflight
       xhr.setRequestHeader('Content-Type', 'text/plain');
-      xhr.send(data);
+      xhr.send(content);
     } else {
       xhr.send(null);
     }
     return xhr;
-  }
+  };
 
-  ElasticEvent.prototype.send = function (sync) {
+  ElasticEvent.prototype.request = function (data, options, callback) {
+    var opts = options || {};
+    var json;
+    var url = opts.url || opts.host || this.host;
+
+    if (!opts.url) {
+      if (opts.index || this.index) {
+        url += '/' + (opts.index || this.index);
+      }
+      if (opts.type || this.type) {
+        url += '/' + (opts.type || this.type);
+      }
+
+      url += '/_' + (opts.op || 'search');
+    }
+
+    if (data && typeof data === 'object') {
+      json = JSON.stringify(data);
+    }
+
+    return this.xhr(url, json || data, opts.sync, callback);
+  };
+
+  ElasticEvent.prototype.send = function (options, callback) {
+    var opts = options || {};
+
     if (!this.queue.length) {
       return;
     }
-    request(
-      this.url + '/_bulk',
-      this.queue.splice(0, this.max).join(''),
-      !sync
-    );
-  };
 
-  ElasticEvent.prototype.search = function (query, callback) {
-    request(
-      this.url + '/_search',
-      query ? JSON.stringify(query) : null,
-      true,
+    opts.op = 'bulk';
+
+    this.request(
+      this.queue.splice(0, opts.max || this.max).join(''),
+      opts,
       callback
     );
   };
 
-  function uuid() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-      var r = Math.random() * 16 | 0;
-      var v = c === 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
-    });
-  }
+  ElasticEvent.prototype.search = function (query, options, callback) {
+    var opts = options || {};
 
-  ElasticEvent.prototype.identify = function (userId) {
-    this.sessionId = this.sessionid || uuid();
+    opts.op = 'search';
 
-    if (userId && typeof userId !== 'string') {
-      throw new Error('invalid typeof userId');
-    }
+    this.request(
+      query,
+      opts,
+      callback
+    );
+  };
 
-    if (userId) {
-      this.userId = userId;
+  ElasticEvent.prototype.identify = function (traits) {
+    var trait;
+    for (trait in traits) {
+      if (traits.hasOwnProperty(trait)) {
+        this.traits[trait] = traits[trait];
+      }
     }
   };
 
   ElasticEvent.prototype.baseEvent = function (event) {
     var baseEvent = event || {};
+    var trait;
 
-    if (this.userId) {
-      baseEvent.userId = this.userId;
+    for (trait in this.traits) {
+      if (this.traits.hasOwnProperty(trait) &&
+        !baseEvent.hasOwnProperty(trait)) {
+        baseEvent[trait] = this.traits[trait];
+      }
     }
-
-    if (this.sessionId) {
-      baseEvent.sessionId = this.sessionId;
-    }
-
-    baseEvent.timestamp = new Date().toISOString();
 
     return baseEvent;
   };
