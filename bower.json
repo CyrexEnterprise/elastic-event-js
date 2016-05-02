@@ -1,7 +1,7 @@
 {
   "name": "elastic-event-js",
   "description": "Event logging using ElasticSearch",
-  "main": "elastic-event.js",
+  "main": "dist/elastic-event.min.js",
   "authors": [
     "Edgar Ribeiro"
   ],
