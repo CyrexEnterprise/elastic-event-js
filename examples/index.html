@@ -1,6 +1,6 @@
 <html>
 <body>
-  <script src="../elastic-event.js"></script>
+  <script src="../dist/elastic-event.min.js"></script>
   <script src="../node_modules/bodybuilder/browser/bodybuilder.min.js"></script>
   host: <input id="host" type="text"><br>
   index: <input id="index" type="text"><br>
@@ -20,6 +20,8 @@
     searchClicks = document.getElementById('searchClicks');
     userFetch = document.getElementById('userFetch');
 
+    var elasticevent = new ElasticEvent();
+
     // extend base event
     var base = elasticevent.baseEvent;
     elasticevent.baseEvent = function () {
@@ -33,10 +35,8 @@
     });
 
     function config () {
-      elasticevent.config({
-        host: host.value,
-        index: index.value
-      });
+      elasticevent.host = host.value;
+      elasticevent.index = index.value;
     }
 
     function identify () {
