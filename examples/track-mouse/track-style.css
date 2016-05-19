@@ -36,14 +36,3 @@ canvas{
   font:large Arial, Helvetica, sans-serif;
   color: #FFFFFF;
 }
-
-#particles-js{
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background-color: #1718a7;
-  background-image: url('');
-  background-size: cover;
-  background-position: 50% 50%;
-  background-repeat: no-repeat;
-}
