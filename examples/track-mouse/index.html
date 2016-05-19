@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>ElasticEvent Tracker</title>
+  <meta name="description" content="ElasticEvent Tracker">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" media="screen" href="track-style.css">
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <span id="session-id"></span>
+  <span id="instructions">Smile! Your mouse position and clicks are being tracked.</span>
+  <script src="../../dist/elastic-event.min.js"></script>
+  <script src="../../node_modules/bodybuilder/browser/bodybuilder.min.js"></script>
+  <script src="track-mouse.js"></script>
+  <script src="draw-mouse.js"></script>
+  <script src="query-mouse.js"></script>
+  <script>
+    var elasticevent = new ElasticEvent({
+      host: 'https://logsene-receiver.sematext.com',
+      index: '8653e58f-6a84-4839-8541-df3f316111cc',
+      setupIntervalSend: true,
+      setupBeforeUnload: true
+    });
+
+    // extend base event
+    var base = elasticevent.baseEvent;
+
+    elasticevent.baseEvent = function () {
+      var baseEvent = base.apply(this, arguments);
+      baseEvent['@timestamp'] = new Date().toISOString();
+      return baseEvent;
+    };
+
+    var sessionId = new Date().getTime().toString() +
+      '-xxxxxx'.replace(/x/g, function() {
+        return (Math.random()*16|0).toString(16)
+      });
+
+    var canvas = document.getElementById('canvas');
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    var sessionIdElement = document.getElementById('session-id');
+
+    sessionIdElement.textContent = sessionId;
+
+    // identify current session
+    elasticevent.identify({
+      sessionId: sessionId
+    });
+
+    drawmouse();
+
+    trackmouse(elasticevent);
+
+    querymouse(elasticevent, Bodybuilder)
+
+  </script>
+</body>
+</html>

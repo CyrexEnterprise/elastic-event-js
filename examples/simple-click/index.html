@@ -1,7 +1,7 @@
 <html>
 <body>
-  <script src="../dist/elastic-event.min.js"></script>
-  <script src="../node_modules/bodybuilder/browser/bodybuilder.min.js"></script>
+  <script src="../../dist/elastic-event.min.js"></script>
+  <script src="../../node_modules/bodybuilder/browser/bodybuilder.min.js"></script>
   host: <input id="host" type="text"><br>
   index: <input id="index" type="text"><br>
   <button onclick="config()">Config</button><br><br>
@@ -21,14 +21,6 @@
     userFetch = document.getElementById('userFetch');
 
     var elasticevent = new ElasticEvent();
-
-    // extend base event
-    var base = elasticevent.baseEvent;
-    elasticevent.baseEvent = function () {
-      var baseEvent = base.apply(this, arguments);
-      baseEvent['@timestamp'] = new Date().toISOString();
-      return baseEvent;
-    };
 
     elasticevent.identify({
       sessionId: new Date().getTime()
