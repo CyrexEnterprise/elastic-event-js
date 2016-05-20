@@ -1,7 +1,7 @@
 # Elastic Event
 
 Use elastic-event-js to feed and query an ElasticSearch API with data from the
-browser.
+browser. [API Reference](http://cloudoki.github.io/elastic-event-js/docs/)
 
 * [Features](#features)
 * [Install](#install)
@@ -9,7 +9,7 @@ browser.
 * [Examples](#examples)
 * [Building](#building)
 * [Linting check](#linting-check)
-* [API Reference](#api-reference)
+* [Documentation](#documentation)
 
 ## Features
 
@@ -87,7 +87,13 @@ elasticevent.search(
 
 ## Examples
 
-To run the examples you can serve them with:
+- [simple-click](http://cloudoki.github.io/elastic-event-js/examples/simple-click/):
+A simple click event and query by identity
+
+- [track-mouse](http://cloudoki.github.io/elastic-event-js/examples/track-mouse/): An example were the mouse movement and clicks are tracked and
+queried.
+
+To run the examples locally you can serve them with:
 
 ```
 npm run static
@@ -109,9 +115,11 @@ npm run build -s
 npm run lint -s
 
 ```
-## API Reference
+## Documentation
 
 - [jsDoc](http://usejsdoc.org/)
+
+You may also build and serve the API reference locally:
 
 ```
 npm run docs -s
