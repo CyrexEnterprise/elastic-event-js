@@ -30,6 +30,10 @@ npm install Cloudoki\elastic-event-js
 bower install Cloudoki\elastic-event-js
 ```
 
+```html
+<script src="https://cloudoki.github.io/elastic-event-js/dist/elastic-event.min.js" type="text/javascript"></script>
+```
+
 ## Usage
 
 Configuration
