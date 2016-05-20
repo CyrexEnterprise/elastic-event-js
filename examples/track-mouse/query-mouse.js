@@ -7,7 +7,7 @@
 
   function response(ctx, err, resp) {
     if (err) {
-      return console.error(err);
+      return;
     }
 
     queryFrom += resp.hits.hits.length;

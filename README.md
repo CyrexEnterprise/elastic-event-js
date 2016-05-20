@@ -1,1 +1,118 @@
 # Elastic Event
+
+Use elastic-event-js to feed and query an ElasticSearch API with data from the
+browser.
+
+## Features
+
+- No dependencies
+- Small: 3.13 KB
+- No pre-flight requests
+- Simple Interface
+- Bulk saving of events for reduced overhead
+- Save queued events before unload of window
+
+## Install
+
+```
+npm install Cloudoki\elastic-event-js
+```
+
+```
+bower install Cloudoki\elastic-event-js
+```
+
+## Usage
+
+Configuration
+
+```javascript
+var elasticevent = new ElasticEvent({
+  host: 'https://api.elasticsearch.com',
+  index: 'your_index',
+  setupIntervalSend: true,
+  setupBeforeUnload: true
+});
+```
+
+Identify a session
+
+```javascript
+elasticevent.identify({
+  sessionId: new Date().getTime()
+});
+```
+
+Track an event, this sets `_type` to click.
+
+```javascript
+function onClick () {
+  elasticevent.track('click');
+}
+```
+
+Track an event with more details
+
+```javascript
+function onClick(event) {
+  elasticevent.track('click', {
+    x: (event.clientX / window.innerWidth).toPrecision(8),
+    y: (event.clientY / window.innerHeight).toPrecision(8)
+  });
+}
+```
+
+Querying with an elastic DSL helper library, here we use the
+[Bodybuilder](https://github.com/danpaz/bodybuilder) but you may also use others, like [esq](https://github.com/holidayextras/esq) or [elastic.js](https://github.com/fullscale/elastic.js)
+
+```javascript
+elasticevent.search(
+  new Bodybuilder()
+    .filter('term', 'sessionId.raw', elasticevent.traits.sessionId)
+    .size(50)
+    .build('v2'),
+    null,
+  function(err, resp) {
+    console.log(resp);
+  });
+```
+
+## Examples
+
+To run the examples you can serve them with:
+
+```
+npm run static
+```
+
+## Building
+
+- [webpack](https://github.com/webpack/webpack)
+
+```
+npm run build -s
+```
+
+## Linting check
+
+- [eslint](http://eslint.org/)
+
+```
+npm run lint -s
+
+```
+## API Reference
+
+- [jsDoc](http://usejsdoc.org/)
+
+```
+npm run docs -s
+```
+
+Documentation will be generated at `./docs`
+
+To inspect the `./docs` you may want to serve your local files.
+
+```
+npm run static
+```
