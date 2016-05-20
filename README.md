@@ -3,6 +3,14 @@
 Use elastic-event-js to feed and query an ElasticSearch API with data from the
 browser.
 
+* [Features](#features)
+* [Install](#install)
+* [Usage](#usage)
+* [Examples](#examples)
+* [Building](#building)
+* [Linting check](#linting-check)
+* [API Reference](#api-reference)
+
 ## Features
 
 - No dependencies
