@@ -87,11 +87,12 @@ elasticevent.search(
 
 ## Examples
 
+You may need to disable your ad blocker for the examples to work.
+
 - [simple-click](http://cloudoki.github.io/elastic-event-js/examples/simple-click/):
 A simple click event and query by identity
 
-- [track-mouse](http://cloudoki.github.io/elastic-event-js/examples/track-mouse/): An example were the mouse movement and clicks are tracked and
-queried.
+- [track-mouse](http://cloudoki.github.io/elastic-event-js/examples/track-mouse/): An example were the mouse movement and clicks are tracked and queried.
 
 To run the examples locally you can serve them with:
 
