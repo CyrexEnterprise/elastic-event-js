@@ -27,11 +27,11 @@ browser.
 ## Install
 
 ```
-npm install Cloudoki\elastic-event-js
+npm install Cloudoki/elastic-event-js
 ```
 
 ```
-bower install Cloudoki\elastic-event-js
+bower install Cloudoki/elastic-event-js
 ```
 
 ```html
