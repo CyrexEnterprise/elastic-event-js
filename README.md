@@ -13,7 +13,7 @@ browser.
 * [Examples](#examples)
 * [Building](#building)
 * [Linting check](#linting-check)
-* [Documentation](#documentation)a
+* [Documentation](#documentation)
 
 ## Features
 
